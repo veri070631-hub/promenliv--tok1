@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10233f">
+<title>Физика: Електромагнитна индукция и променлив ток</title>
+<style>
+:root{--navy:#10233f;--blue:#2457a7;--pale:#eef4ff;--ink:#172338;--muted:#64748b;--green:#147d50;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#edf3fb,#f8fafc);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);min-height:100vh;padding:22px}
+main{max-width:760px;margin:24px auto;background:white;border-radius:22px;box-shadow:0 16px 50px #10233f18;overflow:hidden}
+header{background:var(--navy);color:white;padding:28px 30px}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:#b9d0f5;font-weight:700}
+h1{font-size:clamp(1.45rem,4vw,2.1rem);line-height:1.2;margin:10px 0}
+header p{color:#d9e6fb;margin:0;line-height:1.5}
+.content{padding:26px 30px 30px}.topline{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:.92rem;margin-bottom:10px}
+.track{height:8px;background:#e8edf5;border-radius:99px;overflow:hidden;margin-bottom:24px}.fill{height:100%;width:0;background:#4f86d9;transition:width .25s}
+h2{font-size:1.25rem;line-height:1.45;margin:0 0 20px}
+.answers{display:grid;gap:11px}.answer{width:100%;text-align:left;border:1.5px solid #d8e0ec;border-radius:13px;background:#fff;padding:14px 16px;font-size:1rem;color:var(--ink);cursor:pointer;transition:.15s}
+.answer:hover:not(:disabled){border-color:var(--blue);background:var(--pale)}.answer:focus-visible,button:focus-visible{outline:3px solid #8bb5ff;outline-offset:2px}
+.answer:disabled{cursor:default}.answer.correct{border-color:#35a474;background:#eaf8f1}.answer.wrong{border-color:#e17b73;background:#fff0ef}
+.feedback{margin-top:18px;border-radius:13px;padding:14px 16px;line-height:1.5;background:#f1f5f9;display:none}.feedback.show{display:block}.feedback.good{background:#eaf8f1;color:#125b3c}.feedback.bad{background:#fff0ef;color:#8b2019}
+.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;flex-wrap:wrap}
+button.primary{border:0;border-radius:12px;padding:12px 20px;background:var(--blue);color:white;font-weight:700;font-size:1rem;cursor:pointer}button.primary:disabled{opacity:.4;cursor:not-allowed}
+.result{text-align:center;padding:10px 0}.score{font-size:3.4rem;font-weight:800;color:var(--blue);margin:10px}.result p{line-height:1.6;color:var(--muted)}
+.small{font-size:.85rem;color:var(--muted);margin-top:18px;text-align:center}
+@media(max-width:540px){body{padding:10px}main{margin:8px auto;border-radius:16px}header,.content{padding:22px 18px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+ <div class="eyebrow">Интерактивен тест • Физика</div>
+ <h1>Електромагнитна индукция и променлив ток</h1>
+ <p>Провери знанията си с 10 въпроса. Избери един верен отговор за всеки въпрос.</p>
+</header>
+<section class="content" id="quiz">
+ <div class="topline"><span id="counter">Въпрос 1 от 10</span><span id="points">Точки: 0</span></div>
+ <div class="track"><div class="fill" id="progress"></div></div>
+ <h2 id="question"></h2>
+ <div class="answers" id="answers"></div>
+ <div class="feedback" id="feedback" aria-live="polite"></div>
+ <div class="actions"><button class="primary" id="next" disabled>Следващ въпрос</button></div>
+ <div class="small">Тестът се оценява автоматично. Успех!</div>
+</section>
+<section class="content" id="result" hidden>
+ <div class="result">
+  <div class="eyebrow" style="color:#55739d">Резултат</div>
+  <h2>Ти завърши теста!</h2>
+  <div class="score" id="finalScore">0/10</div>
+  <p id="comment"></p>
+  <button class="primary" id="restart">Реши отново</button>
+ </div>
+</section>
+</main>
+<script>
+const questions = [
+ {q:"1. Какво представлява електромагнитната индукция?",a:["Възникване на електричен ток при промяна на магнитния поток през контур","Нагряване на проводник от ток","Привличане на два магнита"],c:0,e:"Електромагнитна индукция е явлението, при което промяната на магнитния поток през затворен контур поражда индуцирано напрежение и ток."},
+ {q:"2. Кога в затворен проводников контур възниква индуциран ток?",a:["Когато магнитният поток през контура се променя","Когато магнитът и контурът са неподвижни един спрямо друг и полето е постоянно","Само когато контурът е от пластмаса"],c:0,e:"Необходима е промяна на магнитния поток – например чрез движение на магнит или контура, или чрез промяна на магнитното поле."},
+ {q:"3. Какво гласи правилото на Ленц?",a:["Индуцираният ток винаги е по часовниковата стрелка","Посоката му е такава, че магнитното му действие противодейства на причината, която го поражда","Токът не зависи от промяната на магнитния поток"],c:1,e:"Правилото на Ленц изразява закона за запазване на енергията: индуцираният ток противодейства на промяната, която го предизвиква."},
+ {q:"4. Коя величина се измерва в уебери (Wb)?",a:["Електрично съпротивление","Магнитен поток","Сила на тока"],c:1,e:"Магнитният поток се измерва във вебери (Wb)."},
+ {q:"5. Кое устройство работи на принципа на електромагнитната индукция?",a:["Електрически генератор","Обикновен ключ","Електрически нагревател без магнитна система"],c:0,e:"Генераторът преобразува механична енергия в електрична чрез електромагнитна индукция."},
+ {q:"6. Какво е променлив електричен ток?",a:["Ток, чиято посока и големина периодично се изменят","Ток с постоянна посока и неизменна големина","Ток, който протича само във вакуум"],c:0,e:"При променливия ток моментната стойност и посоката се изменят периодично във времето."},
+ {q:"7. Как се нарича времето за едно пълно повторение на променливия ток?",a:["Амплитуда","Период","Честота"],c:1,e:"Периодът T е времето за едно пълно трептене. Измерва се в секунди."},
+ {q:"8. Каква е мерната единица за честота?",a:["Волт (V)","Херц (Hz)","Ом (Ω)"],c:1,e:"Честотата се измерва в херци. 1 Hz означава едно пълно повторение за една секунда."},
+ {q:"9. Ако честотата на променлив ток е 50 Hz, какъв е периодът му?",a:["0,02 s","2 s","50 s"],c:0,e:"Периодът е T = 1/f = 1/50 s = 0,02 s."},
+ {q:"10. Какво показва ефективната стойност на променливото напрежение?",a:["Максималната стойност на напрежението","Стойността на постоянно напрежение, което отделя същата топлина в съпротивление за същото време","Броя на периодите за една секунда"],c:1,e:"Ефективната стойност на променливото напрежение е равностойна на постоянно напрежение по топлинното действие върху съпротивление."}
+];
+let index=0,score=0,locked=false;
+const $=id=>document.getElementById(id);
+function render(){
+ locked=false;$("counter").textContent=`Въпрос ${index+1} от ${questions.length}`;
+ $("points").textContent=`Точки: ${score}`;$("progress").style.width=`${index/questions.length*100}%`;
+ $("question").textContent=questions[index].q;$("answers").innerHTML="";
+ $("feedback").className="feedback";$("feedback").textContent="";$("next").disabled=true;
+ questions[index].a.forEach((answer,i)=>{const b=document.createElement("button");b.className="answer";b.textContent=String.fromCharCode(65+i)+") "+answer;b.onclick=()=>choose(i);$("answers").appendChild(b)});
+ $("next").textContent=index===questions.length-1?"Виж резултата":"Следващ въпрос";
+}
+function choose(choice){
+ if(locked)return;locked=true;const q=questions[index];const buttons=[...$("answers").children];
+ buttons.forEach((b,i)=>{b.disabled=true;if(i===q.c)b.classList.add("correct");if(i===choice&&choice!==q.c)b.classList.add("wrong")});
+ const good=choice===q.c;if(good)score++;
+ $("points").textContent=`Точки: ${score}`;$("feedback").textContent=(good?"Вярно! ":"Не е вярно. ")+q.e;
+ $("feedback").className="feedback show "+(good?"good":"bad");$("next").disabled=false;
+}
+$("next").onclick=()=>{if(index<questions.length-1){index++;render()}else finish()};
+function finish(){
+ $("quiz").hidden=true;$("result").hidden=false;$("finalScore").textContent=`${score}/10`;
+ $("comment").textContent=score===10?"Отлично! Усвоил/а си материала чудесно.":score>=7?"Много добре! Преговори въпросите, на които си допуснал/а грешка.":score>=5?"Добра основа. Преговори определенията и основните зависимости.":"Препоръчваме ти да преговориш урока и да опиташ отново.";
+}
+$("restart").onclick=()=>{index=0;score=0;$("result").hidden=true;$("quiz").hidden=false;render()};
+render();
+</script>
+</body>
+</html>
